@@ -232,6 +232,7 @@ class Git
                 };
                 $this->runCommand($commandCallable, $url, $dir);
             } catch (\Exception $e) {
+                $this->io->writeError('<error>' . $e->getMessage() . '</error>');
                 return false;
             }
 
