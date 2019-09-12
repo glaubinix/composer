@@ -699,6 +699,15 @@ class ComposerRepository extends ArrayRepository implements ConfigurableReposito
                         continue;
                     }
 
+                    json_decode($json);
+                    $this->io->writeError(sprintf('Expected shasum %s. Received shasum %s. JSON error %s', $sha256, hash('sha256', $json), json_last_error()));
+                    if (strlen($json) > 500) {
+                        syslog(LOG_ERR, 'COMPOSER-DEBUG: ' . $json);
+                    } else {
+                        $this->io->writeError($json);
+                    }
+
+
                     // TODO use scarier wording once we know for sure it doesn't do false positives anymore
                     throw new RepositorySecurityException('The contents of '.$filename.' do not match its signature. This could indicate a man-in-the-middle attack or e.g. antivirus software corrupting files. Try running composer again and report this if you think it is a mistake.');
                 }
